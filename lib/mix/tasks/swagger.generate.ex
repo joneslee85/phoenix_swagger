@@ -132,8 +132,8 @@ defmodule Mix.Tasks.Phoenix.Swagger.Generate do
     case function_exported?(Mix.Project.get, :swagger_info, 0) do
       true ->
         info = Mix.Project.get.swagger_info
-        title = Keyword.get(info, :title, nil)
-        version = Keyword.get(info, :version, nil)
+        title = Keyword.get(info, :title, @default_title)
+        version = Keyword.get(info, :version, @default_version)
         # collect :info swagger fields to the map
         info = List.foldl(info, %{},
           fn ({info_key, info_val}, map) ->
@@ -142,12 +142,8 @@ defmodule Mix.Tasks.Phoenix.Swagger.Generate do
         # :title and :version are mandatory fields,
         # so we need to check and add default values
         # if they are not exists
-        info = if title == nil do
-          Map.put_new(info, :title, @default_title)
-        end
-        info = if version == nil do
-          Map.put_new(info, :version, @default_version)
-        end
+        Map.merge(info, %{title: title, version: version})
+  
         # resulted :info swagger field
         Map.put_new(swagger_map, :info, info)
       false ->
