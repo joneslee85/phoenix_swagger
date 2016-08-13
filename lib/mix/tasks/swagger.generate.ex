@@ -68,7 +68,7 @@ defmodule Mix.Tasks.Phoenix.Swagger.Generate do
     # build 'paths' swagger attribute
     paths = List.foldl(api_routes, %{},
       fn (route_map, acc) ->
-        {controller, swagger_fun} = get_api(app_mod, route_map)
+        {controller, swagger_fun} = get_api(route_map)
         # phoenix router accepts parameters in a '/path/path/:id'
         # format, but the swagger has another format, that's why
         # why we need to convert it to swagger format '/path/{id}'
@@ -197,7 +197,7 @@ defmodule Mix.Tasks.Phoenix.Swagger.Generate do
   end
 
   @doc false
-  defp get_api(app_mod, route_map) do
+  defp get_api(route_map) do
     controller = Module.concat([:Elixir | Module.split(route_map.plug)])
     swagger_fun = ("swagger_" <> to_string(route_map.opts)) |> String.to_atom
     if Code.ensure_loaded?(controller) == false do
